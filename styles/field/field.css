@@ -1,0 +1,7 @@
+.field {
+    display: grid;
+    background-color: greenyellow;
+    border-top: var(--main-border-dash);
+    border-left: var(--main-border-dash);
+    margin: 100px auto;
+}

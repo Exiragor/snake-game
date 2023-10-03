@@ -1,0 +1,25 @@
+{
+  "name": "snake-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Exiragor/snake-game.git"
+  },
+  "author": "https://github.com/Exiragor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Exiragor/snake-game/issues"
+  },
+  "homepage": "https://github.com/Exiragor/snake-game#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
+    "eslint": "^8.50.0",
+    "typescript": "^5.2.2"
+  }
+}

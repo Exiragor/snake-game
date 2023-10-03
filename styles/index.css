@@ -1,0 +1,8 @@
+@import url("./vars/borders.css");
+@import url("./field/field.css");
+@import url("./field/cell.css");
+
+body {
+    padding: 0;
+    margin: 0;
+}
