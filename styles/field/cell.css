@@ -7,3 +7,15 @@
     border-bottom: var(--main-border-dash);
     box-sizing: border-box;
 }
+
+.cell.snake {
+    background-color: hotpink;
+}
+
+.cell.snake.head {
+    background-color: red;
+}
+
+.cell.snake.tail {
+    background-color: red;
+}

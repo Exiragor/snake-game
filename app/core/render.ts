@@ -9,4 +9,14 @@ export class Render {
 
         return element;
     }
+
+    getElements<T extends HTMLElement>(selector: string): T[] {
+        const elements: T[] = [...document.querySelectorAll<T>(selector)];
+
+        if (!elements.length) {
+            throw new Error(`Can't find elements by "${selector}" selector`)
+        }
+
+        return elements;
+    }
 }

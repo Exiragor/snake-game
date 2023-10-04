@@ -2,8 +2,12 @@ import {Cord} from "./cord.js";
 
 export class Snake {
     constructor(
-        head: Cord,
-        tale: Cord,
-        body: Cord[]
+        readonly head: Cord,
+        readonly tail: Cord,
+        readonly body: Cord[]
     ) {}
+
+    toArray(): Cord[] {
+        return [this.head, ...this.body, this.tail];
+    }
 }

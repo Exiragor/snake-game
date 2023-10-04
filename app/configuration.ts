@@ -12,9 +12,9 @@ const config: IConfiguration =  {
     snake: {
         speed: 1000,
         cords: {
-            head: new Cord(50, 50),
-            body: [new Cord(50, 51), new Cord(50, 52)],
-            tail: new Cord(50, 53),
+            head: new Cord(5, 4),
+            body: [new Cord(5, 5), new Cord(5, 6)],
+            tail: new Cord(5, 7),
         }
     }
 }
