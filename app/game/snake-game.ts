@@ -10,16 +10,12 @@ import {snakeMovementMap} from "../consts/controller.js";
 import {GameEndEvent, GameStartEvent} from "../events/game-events.js";
 
 export class SnakeGame extends Game {
-    private _snake: Snake | null = null;
-    private _controller: Controller | null = null;
-    private _eventBus: EventsBus | null = null;
+    private _snake: Snake = new Snake(config.snake.cords);
+    private _eventBus: EventsBus = new EventsBus();
+    private _controller: Controller = new Controller(this._eventBus);
     private _snakeInterval: number | null = null;
 
     async init() {
-        this._snake = new Snake(config.snake.cords);
-        this._eventBus = new EventsBus();
-        this._controller = new Controller(this._eventBus);
-
         const fieldRender = new FieldRender(config.field);
         await fieldRender.renderField();
 
@@ -38,32 +34,31 @@ export class SnakeGame extends Game {
         });
 
         this._eventBus.on(new GameEndEvent(), () => {
-            clearInterval(this._snakeInterval!);
-            this._snakeInterval = null;
-            this._controller?.useClickEvent('start', 'Space', new GameStartEvent());
-            this._controller?.removeClickEvent('end', 'Space');
-            this._controller?.removeByMap('snakeMove', snakeMovementMap);
+            if (this._snakeInterval) {
+                clearInterval(this._snakeInterval!);
+                this._snakeInterval = null;
+            }
+
+            this._controller.useClickEvent('start', 'Space', new GameStartEvent());
+            this._controller.removeClickEvent('end', 'Space');
+            this._controller.removeByMap('snakeMove', snakeMovementMap);
         });
     }
 
     private watchSnakeMoves(render: SnakeRender) {
-        this._eventBus!.on(new SnakeMoveEvent(), (direction) => {
-            if (this._snake) {
-                this._snake.changeDirection(direction);
-            }
+        this._eventBus.on(new SnakeMoveEvent(), (direction) => {
+            this._snake.changeDirection(direction);
         });
 
-        this._eventBus!.on(new SnakeMoveForwardEvent(), () => {
-            if (this._snake) {
-                this._snake.moveForward();
-                render.renderSnake(this._snake).catch(console.error);
-            }
+        this._eventBus.on(new SnakeMoveForwardEvent(), () => {
+            this._snake.moveForward();
+            render.renderSnake(this._snake).catch(console.error);
         });
     }
 
     private forceSnakeMovement() {
         this._snakeInterval = setInterval(() => {
-            this._eventBus?.emit(new SnakeMoveForwardEvent());
+            this._eventBus.emit(new SnakeMoveForwardEvent());
         }, config.snake.speed);
     }
 }
