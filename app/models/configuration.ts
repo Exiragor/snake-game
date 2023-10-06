@@ -9,12 +9,8 @@ export interface IFieldConf {
 }
 
 export interface ISnakeConf {
-    speed: number,
-    cords: {
-        head: ICord,
-        tail: ICord,
-        body: ICord[]
-    }
+    speed: number;
+    cords: ICord[];
 }
 
 export interface IConfiguration {

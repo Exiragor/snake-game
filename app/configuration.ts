@@ -4,18 +4,20 @@ import {Cord} from "./core/cord.js";
 const config: IConfiguration =  {
     field: {
         size: {
-            xCols: 10,
-            yCols: 10,
-            cellSize: 50,
+            xCols: 20,
+            yCols: 20,
+            cellSize: 25,
         }
     },
     snake: {
         speed: 1000,
-        cords: {
-            head: new Cord(5, 4),
-            body: [new Cord(5, 5), new Cord(5, 6)],
-            tail: new Cord(5, 7),
-        }
+        cords: [
+            new Cord(10, 8),
+            new Cord(10, 9),
+            new Cord(10, 10),
+            new Cord(10, 11),
+            new Cord(10, 12),
+        ]
     }
 }
 

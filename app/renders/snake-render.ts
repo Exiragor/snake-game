@@ -1,51 +1,47 @@
 import {Render} from "../core/render.js";
 import {Snake} from "../core/snake.js";
-import {FieldRender} from "./field-render.js";
-import {Cord} from "app/core/cord";
+import {FieldCord} from "../game/field-cord.js";
+import {cellsSelector} from "../consts/selectors.js";
 
 export class SnakeRender extends Render {
     private readonly _cells: HTMLDivElement[];
 
-    constructor(
-        readonly fieldRender: FieldRender,
-    ) {
+    constructor() {
         super();
 
-        this._cells = this.getElements<HTMLDivElement>('#field > .cell');
+        this._cells = this.getElements<HTMLDivElement>(cellsSelector);
     }
 
     render(snake: Snake) {
         this.clearCells(snake);
 
-        this.renderCell(snake.head, 'head');
-        this.renderCell(snake.tail, 'tail');
+        this.renderCell(FieldCord.fromCord(snake.head), 'head');
+        this.renderCell(FieldCord.fromCord(snake.tail), 'tail');
 
         snake.body.forEach(cord => {
-            this.renderCell(cord)
+            this.renderCell(FieldCord.fromCord(cord))
         });
     }
 
-    private renderCell(cord: Cord, additionalClass: string = '') {
-        const position = this.fieldRender.getCellPositionByCord(cord);
+    private renderCell(cord: FieldCord, additionalClass: string = '') {
         const cls = ['snake'];
 
         if (additionalClass) {
             cls.push(additionalClass);
         }
 
-        this._cells[position]?.classList.add(...cls);
+        this._cells[cord.getPosition()]?.classList.add(...cls);
     }
 
-    private clearCell(cord: Cord) {
-        const position = this.fieldRender.getCellPositionByCord(cord);
+    private clearCell(cord: FieldCord) {
         const cls = ['snake', 'head', 'tail'];
 
-        this._cells[position]?.classList.remove(...cls);
+        this._cells[cord.getPosition()]?.classList.remove(...cls);
     }
 
     private clearCells(snake: Snake) {
         snake.toArray().forEach(cord => {
-            this.clearCell(cord);
+            this.clearCell(FieldCord.fromCord(cord));
         });
     }
 }

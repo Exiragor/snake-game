@@ -1,4 +1,5 @@
 @import url("./vars/borders.css");
+@import url("./vars/cells.css");
 @import url("./field/field.css");
 @import url("./field/cell.css");
 
