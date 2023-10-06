@@ -3,6 +3,7 @@ import {SnakeDirection} from "../models/snake.js";
 
 export class Snake {
     private _prevCords: Cord[] = [];
+    private _currentDirection: SnakeDirection = 'up';
     private _length: number = 0;
 
     head!: Cord;
@@ -23,9 +24,17 @@ export class Snake {
         return this._prevCords;
     }
 
-    move(direction: SnakeDirection, withGrowth = false) {
+    changeDirection(direction: SnakeDirection) {
+        this._currentDirection = direction;
+    }
+
+    moveForward() {
+        this.move();
+    }
+
+    private move(withGrowth = false) {
         this._prevCords = this.toArray();
-        this.makeSnake(this.getNewCords(direction));
+        this.makeSnake(this.getNewCords());
     }
 
     private makeSnake(cords: Cord[]) {
@@ -35,10 +44,10 @@ export class Snake {
         this._length = this.toArray().length;
     }
 
-    private getNewCords(direction: SnakeDirection): Cord[] {
+    private getNewCords(): Cord[] {
         const withoutTail = this.toArray().slice(0, this._length - 1);
 
-        switch (direction) {
+        switch (this._currentDirection) {
             case "up":
                 return [new Cord(this.head.x, this.head.y - 1), ...withoutTail];
             case "down":

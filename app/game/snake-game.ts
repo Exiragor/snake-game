@@ -5,12 +5,15 @@ import {Controller} from "../core/controller.js";
 import {FieldRender} from "../renders/field-render.js";
 import {SnakeRender} from "../renders/snake-render.js";
 import {EventsBus} from "../core/events-bus.js";
-import {SnakeMoveEvent} from "../events/snake-events.js";
+import {SnakeMoveEvent, SnakeMoveForwardEvent} from "../events/snake-events.js";
+import {snakeMovementMap} from "../consts/controller.js";
+import {GameEndEvent, GameStartEvent} from "../events/game-events.js";
 
 export class SnakeGame extends Game {
     private _snake: Snake | null = null;
     private _controller: Controller | null = null;
     private _eventBus: EventsBus | null = null;
+    private _snakeInterval: number | null = null;
 
     async init() {
         this._snake = new Snake(config.snake.cords);
@@ -23,17 +26,44 @@ export class SnakeGame extends Game {
         const snakeRender = new SnakeRender();
         await snakeRender.renderSnake(this._snake);
 
-        this._eventBus.on(new SnakeMoveEvent(), (direction) => {
-            console.log(this._snake, direction);
+        this.watchSnakeMoves(snakeRender);
+
+        this._controller.useClickEvent('start', 'Space', new GameStartEvent());
+
+        this._eventBus.on(new GameStartEvent(), () => {
+            this._controller?.useClickEvent('end', 'Space', new GameEndEvent());
+            this._controller?.removeClickEvent('start', 'Space');
+            this.forceSnakeMovement();
+            this._controller?.parseClickEventsMap('snakeMove', snakeMovementMap);
+        });
+
+        this._eventBus.on(new GameEndEvent(), () => {
+            clearInterval(this._snakeInterval!);
+            this._snakeInterval = null;
+            this._controller?.useClickEvent('start', 'Space', new GameStartEvent());
+            this._controller?.removeClickEvent('end', 'Space');
+            this._controller?.removeByMap('snakeMove', snakeMovementMap);
+        });
+    }
+
+    private watchSnakeMoves(render: SnakeRender) {
+        this._eventBus!.on(new SnakeMoveEvent(), (direction) => {
             if (this._snake) {
-                this._snake.move(direction);
-                snakeRender.renderSnake(this._snake);
+                this._snake.changeDirection(direction);
             }
         });
 
-        this._controller.useClickEvent('ArrowUp', new SnakeMoveEvent('up'));
-        this._controller.useClickEvent('ArrowDown', new SnakeMoveEvent('down'));
-        this._controller.useClickEvent('ArrowLeft', new SnakeMoveEvent('left'));
-        this._controller.useClickEvent('ArrowRight', new SnakeMoveEvent('right'));
+        this._eventBus!.on(new SnakeMoveForwardEvent(), () => {
+            if (this._snake) {
+                this._snake.moveForward();
+                render.renderSnake(this._snake).catch(console.error);
+            }
+        });
+    }
+
+    private forceSnakeMovement() {
+        this._snakeInterval = setInterval(() => {
+            this._eventBus?.emit(new SnakeMoveForwardEvent());
+        }, config.snake.speed);
     }
 }

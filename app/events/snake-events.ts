@@ -16,3 +16,9 @@ export class SnakeMoveEvent extends Event {
         return this._snakeDirection;
     }
 }
+
+export class SnakeMoveForwardEvent extends Event {
+    constructor() {
+        super('moveForward', snakeEventsDomain);
+    }
+}

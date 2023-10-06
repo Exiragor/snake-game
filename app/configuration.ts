@@ -10,7 +10,7 @@ const config: IConfiguration =  {
         }
     },
     snake: {
-        speed: 1000,
+        speed: 250,
         cords: [
             new Cord(10, 8),
             new Cord(10, 9),
