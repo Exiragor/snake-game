@@ -6,7 +6,6 @@ import {FieldRender} from "../renders/field-render.js";
 import {SnakeRender} from "../renders/snake-render.js";
 import {EventsBus} from "../core/events-bus.js";
 import {SnakeMoveEvent} from "../events/snake-events.js";
-import {SnakeDirection} from "../models/snake.js";
 
 export class SnakeGame extends Game {
     private _snake: Snake | null = null;
@@ -27,13 +26,14 @@ export class SnakeGame extends Game {
         this._eventBus.on(new SnakeMoveEvent(), (direction) => {
             console.log(this._snake, direction);
             if (this._snake) {
-                console.log(this._snake.toArray());
                 this._snake.move(direction);
-                console.log(this._snake.toArray());
                 snakeRender.renderSnake(this._snake);
             }
         });
 
-        this._controller.use('keydown', new SnakeMoveEvent('up'));
+        this._controller.useClickEvent('ArrowUp', new SnakeMoveEvent('up'));
+        this._controller.useClickEvent('ArrowDown', new SnakeMoveEvent('down'));
+        this._controller.useClickEvent('ArrowLeft', new SnakeMoveEvent('left'));
+        this._controller.useClickEvent('ArrowRight', new SnakeMoveEvent('right'));
     }
 }

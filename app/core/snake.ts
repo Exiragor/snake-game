@@ -3,6 +3,7 @@ import {SnakeDirection} from "../models/snake.js";
 
 export class Snake {
     private _prevCords: Cord[] = [];
+    private _length: number = 0;
 
     head!: Cord;
     tail!: Cord;
@@ -31,20 +32,21 @@ export class Snake {
         this.head = cords.splice(0, 1)[0];
         this.tail = cords.splice(cords.length - 1, 1)[0];
         this.body = [...cords];
+        this._length = this.toArray().length;
     }
 
     private getNewCords(direction: SnakeDirection): Cord[] {
-        const curr = this.toArray();
+        const withoutTail = this.toArray().slice(0, this._length - 1);
 
         switch (direction) {
             case "up":
-                return curr.map(({x, y}) => new Cord(x, --y));
+                return [new Cord(this.head.x, this.head.y - 1), ...withoutTail];
             case "down":
-                return curr.map(({x, y}) => new Cord(x, ++y));
+                return [new Cord(this.head.x, this.head.y + 1), ...withoutTail];
             case "left":
-                return curr.map(({x, y}) => new Cord(--x, y));
+                return [new Cord(this.head.x - 1, this.head.y), ...withoutTail];
             case "right":
-                return curr.map(({x, y}) => new Cord(++x, y));
+                return [new Cord(this.head.x + 1, this.head.y), ...withoutTail];
         }
     }
 
