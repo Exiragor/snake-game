@@ -12,7 +12,7 @@ export class FieldCord extends Cord {
     }
 
     getPosition() {
-        return this.y * this._fieldConfig.size.xCols + this.x;
+        return Math.abs(this.y) * this._fieldConfig.size.xCols + Math.abs(this.x);
     }
 
     static fromCord(cord: Cord): FieldCord {

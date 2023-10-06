@@ -6,10 +6,10 @@ const snakeEventsDomain = 'snake';
 export class SnakeMoveEvent extends Event {
     private readonly _snakeDirection: SnakeDirection;
 
-    constructor(direction: SnakeDirection) {
+    constructor(direction?: SnakeDirection) {
         super('move', snakeEventsDomain);
 
-        this._snakeDirection = direction;
+        this._snakeDirection = direction ?? 'up';
     }
 
     override getPayload(): SnakeDirection {

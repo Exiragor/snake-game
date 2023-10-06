@@ -12,14 +12,16 @@ export class SnakeRender extends Render {
         this._cells = this.getElements<HTMLDivElement>(cellsSelector);
     }
 
-    render(snake: Snake) {
-        this.clearCells(snake);
+    async renderSnake(snake: Snake) {
+        await this.render(() => {
+            this.clearCells(snake);
 
-        this.renderCell(FieldCord.fromCord(snake.head), 'head');
-        this.renderCell(FieldCord.fromCord(snake.tail), 'tail');
+            this.renderCell(FieldCord.fromCord(snake.head), 'head');
+            this.renderCell(FieldCord.fromCord(snake.tail), 'tail');
 
-        snake.body.forEach(cord => {
-            this.renderCell(FieldCord.fromCord(cord))
+            snake.body.forEach(cord => {
+                this.renderCell(FieldCord.fromCord(cord))
+            });
         });
     }
 
@@ -40,7 +42,7 @@ export class SnakeRender extends Render {
     }
 
     private clearCells(snake: Snake) {
-        snake.toArray().forEach(cord => {
+        [...snake.prevCords, ...snake.toArray()].forEach(cord => {
             this.clearCell(FieldCord.fromCord(cord));
         });
     }

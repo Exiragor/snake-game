@@ -19,4 +19,13 @@ export class Render {
 
         return elements;
     }
+
+    render(renderAction: () => void): Promise<void> {
+        return new Promise((resolve) => {
+            requestAnimationFrame(() => {
+                renderAction();
+                resolve();
+            });
+        });
+    }
 }

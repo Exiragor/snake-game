@@ -5,12 +5,12 @@ type Action = (payload: unknown) => unknown;
 export class EventsBus {
     private events: Map<string, Set<Action>> = new Map();
 
-    on(event: Event, action: Action) {
+    on<E extends Event>(event: E, action: (payload: ReturnType<E["getPayload"]>) => unknown) {
         if (!this.events.has(event.name)) {
             this.events.set(event.name, new Set<Action>());
         }
 
-        this.events.get(event.name)!.add(action);
+        this.events.get(event.name)!.add(action as Action);
     }
 
     off(event: Event, action: Action) {

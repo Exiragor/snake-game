@@ -1,20 +1,51 @@
 import {Cord} from "./cord.js";
+import {SnakeDirection} from "../models/snake.js";
 
 export class Snake {
-    readonly head: Cord;
-    readonly tail: Cord;
-    readonly body: Cord[];
+    private _prevCords: Cord[] = [];
+
+    head!: Cord;
+    tail!: Cord;
+    body!: Cord[];
 
     constructor(cords: Cord[]) {
         Snake.validateCords(cords);
 
+        this.makeSnake(cords);
+    }
+
+    toArray(): Cord[] {
+        return [this.head, ...this.body, this.tail];
+    }
+
+    get prevCords(): Cord[] {
+        return this._prevCords;
+    }
+
+    move(direction: SnakeDirection, withGrowth = false) {
+        this._prevCords = this.toArray();
+        this.makeSnake(this.getNewCords(direction));
+    }
+
+    private makeSnake(cords: Cord[]) {
         this.head = cords.splice(0, 1)[0];
         this.tail = cords.splice(cords.length - 1, 1)[0];
         this.body = [...cords];
     }
 
-    toArray(): Cord[] {
-        return [this.head, ...this.body, this.tail];
+    private getNewCords(direction: SnakeDirection): Cord[] {
+        const curr = this.toArray();
+
+        switch (direction) {
+            case "up":
+                return curr.map(({x, y}) => new Cord(x, --y));
+            case "down":
+                return curr.map(({x, y}) => new Cord(x, ++y));
+            case "left":
+                return curr.map(({x, y}) => new Cord(--x, y));
+            case "right":
+                return curr.map(({x, y}) => new Cord(++x, y));
+        }
     }
 
     private static validateCords(cords: Cord[]) {

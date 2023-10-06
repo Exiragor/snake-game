@@ -11,9 +11,7 @@ export class FieldRender extends Render {
     readonly fieldHeight: number;
     readonly cellSize: number;
 
-    constructor(
-        fieldConfig: IFieldConf
-    ) {
+    constructor(fieldConfig: IFieldConf) {
         super();
 
         this._cellTpl = this.getElement<HTMLTemplateElement>(cellTplSelector);
@@ -22,15 +20,19 @@ export class FieldRender extends Render {
         this.cellSize = fieldConfig.size.cellSize ?? this._defaultCellSize;
     }
 
-    renderField() {
+    async renderField() {
         const field = this.getElement<HTMLDivElement>(fieldSelector);
 
-        field.style.gridTemplateColumns = `repeat(${this.fieldWidth}, 1fr)`;
-        field.style.maxWidth = `${this.fieldWidth * this.cellSize}px`;
-        field.style.setProperty('--cell-size', `${this.cellSize}px`)
+        await this.render(() => {
+            field.style.gridTemplateColumns = `repeat(${this.fieldWidth}, 1fr)`;
+            field.style.maxWidth = `${this.fieldWidth * this.cellSize}px`;
+            field.style.setProperty('--cell-size', `${this.cellSize}px`)
+        });
 
-        for (const _ of new Array(this.fieldWidth * this.fieldHeight)) {
-            field.appendChild(this._cellTpl.content.cloneNode(true));
-        }
+        await this.render(() => {
+            for (const _ of new Array(this.fieldWidth * this.fieldHeight)) {
+                field.appendChild(this._cellTpl.content.cloneNode(true));
+            }
+        });
     }
 }
