@@ -30,6 +30,9 @@ export class Snake {
     }
 
     changeDirection(direction: SnakeDirection) {
+        if (SnakeUtils.checkOppositeDirection(this._currentDirection, direction)) {
+            return;
+        }
         this._currentDirection = direction;
     }
 
