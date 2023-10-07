@@ -1,7 +1,6 @@
-import {Render} from "../core/render.js";
-import {Snake} from "../core/snake.js";
-import {FieldCord} from "../game/field-cord.js";
-import {cellsSelector} from "../consts/selectors.js";
+import {Render} from "@core";
+import {cellsSelector} from "@consts";
+import {FieldCord, Snake} from "../game";
 
 export class SnakeRender extends Render {
     private readonly _cells: HTMLDivElement[];

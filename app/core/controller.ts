@@ -1,7 +1,7 @@
-import {Event} from "./event.js";
-import {EventsBus} from "./events-bus.js";
-import {ClickOpts} from "../models/controller.js";
-import {defaultClickOpts, keyDownEvent} from "../consts/controller.js";
+import {Event} from "./event";
+import {EventsBus} from "./events-bus";
+import {ClickOpts} from "@models";
+import {defaultClickOpts, keyDownEvent} from "@consts";
 
 export class Controller {
     private _eventBus: EventsBus;

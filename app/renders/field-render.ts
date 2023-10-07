@@ -1,6 +1,6 @@
-import {Render} from "../core/render.js";
-import {IFieldConf} from "../models/configuration.js";
-import {cellTplSelector, fieldSelector} from "../consts/selectors.js";
+import {Render} from "@core";
+import {IFieldConf} from "@models";
+import {cellTplSelector, fieldSelector} from "@consts";
 
 export class FieldRender extends Render {
     private readonly _defaultSize = 10;

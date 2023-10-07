@@ -1,4 +1,4 @@
-import {ICord} from "./cord.js";
+import {ICord} from "./cord";
 
 export interface IFieldConf {
     size: {

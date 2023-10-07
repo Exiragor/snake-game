@@ -1,5 +1,5 @@
-import {Event} from "../core/event.js";
-import {SnakeDirection} from "../models/snake.js";
+import {Event} from "@core";
+import {SnakeDirection} from "@models";
 
 const snakeEventsDomain = 'snake';
 

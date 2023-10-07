@@ -1,5 +1,5 @@
-import type {IConfiguration} from "./models/configuration.js";
-import {Cord} from "./core/cord.js";
+import type {IConfiguration} from "@models";
+import {Cord} from "@core";
 
 const config: IConfiguration =  {
     field: {

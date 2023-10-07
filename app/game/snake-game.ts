@@ -1,13 +1,9 @@
-import config from '../configuration.js';
-import {Game} from "../core/game.js";
-import {Snake} from "../core/snake.js";
-import {Controller} from "../core/controller.js";
-import {FieldRender} from "../renders/field-render.js";
-import {SnakeRender} from "../renders/snake-render.js";
-import {EventsBus} from "../core/events-bus.js";
-import {SnakeChangeDirectionEvent, SnakeMoveEvent} from "../events/snake-events.js";
-import {snakeMovementMap} from "../consts/controller.js";
-import {GameStartOrEndEvent} from "../events/game-events.js";
+import config from '../configuration';
+import {Game, Controller, EventsBus} from "@core";
+import {SnakeChangeDirectionEvent, SnakeMoveEvent, GameStartOrEndEvent} from "@events";
+import {FieldRender, SnakeRender} from "../renders";
+import {snakeMovementMap} from "./snake-movement-map.ts";
+import {Snake} from "./snake.ts";
 
 export class SnakeGame extends Game {
     private _eventBus: EventsBus = new EventsBus();

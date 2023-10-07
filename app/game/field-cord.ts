@@ -1,6 +1,6 @@
-import {Cord} from "../core/cord.js";
-import {IFieldConf} from "../models/configuration.js";
-import config from "../configuration.js";
+import {Cord} from "@core";
+import {IFieldConf} from "@models";
+import config from "../configuration";
 
 export class FieldCord extends Cord {
     private readonly _fieldConfig: IFieldConf;

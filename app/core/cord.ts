@@ -1,4 +1,4 @@
-import {ICord} from "../models/cord.js";
+import {ICord} from "@models";
 
 export class Cord implements ICord {
     constructor(

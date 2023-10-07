@@ -1,7 +1,6 @@
-import {Cord} from "./cord.js";
-import {SnakeDirection} from "../models/snake.js";
-import {EventsBus} from "./events-bus.js";
-import {SnakeMoveEvent} from "../events/snake-events.js";
+import {Cord, EventsBus} from "@core";
+import {SnakeDirection} from "@models";
+import {SnakeMoveEvent} from "@events";
 
 export class Snake {
     private _prevCords: Cord[] = [];
