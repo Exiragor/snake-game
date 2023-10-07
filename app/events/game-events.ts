@@ -2,8 +2,14 @@ import {Event} from "@core";
 
 const gameEventsDomain = 'game';
 
-export class GameStartOrEndEvent extends Event {
+export class GameToggleEvent extends Event {
     constructor() {
-        super('start', gameEventsDomain);
+        super('toggle', gameEventsDomain);
+    }
+}
+
+export class GameRestoreEvent extends Event {
+    constructor() {
+        super('restore', gameEventsDomain);
     }
 }

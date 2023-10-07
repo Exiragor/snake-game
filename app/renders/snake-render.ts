@@ -24,6 +24,12 @@ export class SnakeRender extends Render {
         });
     }
 
+    async destroySnake(snake: Snake) {
+        await this.render(() => {
+            this.clearCells(snake);
+        });
+    }
+
     private renderCell(cord: FieldCord, additionalClass: string = '') {
         const cls = ['snake'];
 

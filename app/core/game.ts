@@ -10,9 +10,9 @@ export abstract class Game {
         this.isActive = false;
     }
 
-    restart() {
+    restore() {
+        this.stop();
         this.score = 0;
-        this.start();
     }
 
     increaseScore(deltaScore: number) {

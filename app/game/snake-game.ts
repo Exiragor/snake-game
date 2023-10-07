@@ -1,6 +1,6 @@
 import config from '../configuration';
 import {Game, Controller, EventsBus} from "@core";
-import {SnakeChangeDirectionEvent, SnakeMoveEvent, GameStartOrEndEvent} from "@events";
+import {SnakeChangeDirectionEvent, SnakeMoveEvent, GameToggleEvent, GameRestoreEvent} from "@events";
 import {FieldRender, SnakeRender} from "../renders";
 import {snakeMovementMap} from "./snake-movement-map.ts";
 import {Snake} from "./snake.ts";
@@ -21,7 +21,7 @@ export class SnakeGame extends Game {
         this.setControllers();
 
         this.watchSnakeMovement(snakeRender);
-        this.watchGameEvents();
+        this.watchGameEvents(snakeRender);
     }
 
     override start() {
@@ -40,7 +40,8 @@ export class SnakeGame extends Game {
 
     private setControllers() {
         this._snakeController.setEventsByMap(snakeMovementMap);
-        this._gameController.useEvent('Space', new GameStartOrEndEvent());
+        this._gameController.useEvent('Space', new GameToggleEvent());
+        this._gameController.useEvent('Escape', new GameRestoreEvent());
     }
 
     private watchSnakeMovement(snakeRender: SnakeRender) {
@@ -53,13 +54,21 @@ export class SnakeGame extends Game {
         });
     }
 
-    private watchGameEvents() {
-        this._eventBus.on(new GameStartOrEndEvent(), () => {
+    private watchGameEvents(snakeRender: SnakeRender) {
+        this._eventBus.on(new GameToggleEvent(), () => {
             if (!this.isActive) {
                 this.start();
             } else {
                 this.stop();
             }
+        });
+
+        this._eventBus.on(new GameRestoreEvent(), () => {
+            this.restore();
+            snakeRender.destroySnake(this._snake).then(() => {
+                this._snake = new Snake(config.snake.cords, this._eventBus);
+                return snakeRender.renderSnake(this._snake);
+            }).catch(console.error);
         });
     }
 }

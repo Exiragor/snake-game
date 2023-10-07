@@ -51,9 +51,10 @@ export class Snake {
     }
 
     private makeSnake(cords: Cord[]) {
-        this.head = cords.splice(0, 1)[0];
-        this.tail = cords.splice(cords.length - 1, 1)[0];
-        this.body = [...cords];
+        const tplArr = [...cords];
+        this.head = tplArr.splice(0, 1)[0];
+        this.tail = tplArr.splice(tplArr.length - 1, 1)[0];
+        this.body = [...tplArr];
         this._length = this.toArray().length;
     }
 
