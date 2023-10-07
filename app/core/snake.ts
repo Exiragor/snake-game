@@ -1,19 +1,24 @@
 import {Cord} from "./cord.js";
 import {SnakeDirection} from "../models/snake.js";
+import {EventsBus} from "./events-bus.js";
+import {SnakeMoveEvent} from "../events/snake-events.js";
 
 export class Snake {
     private _prevCords: Cord[] = [];
     private _currentDirection: SnakeDirection = 'up';
     private _length: number = 0;
+    private _speedInterval: number | null = null;
+    private _eventBus: EventsBus;
 
     head!: Cord;
     tail!: Cord;
     body!: Cord[];
 
-    constructor(cords: Cord[]) {
+    constructor(cords: Cord[], eventBus: EventsBus) {
         Snake.validateCords(cords);
 
         this.makeSnake(cords);
+        this._eventBus = eventBus ?? new EventsBus();
     }
 
     toArray(): Cord[] {
@@ -28,13 +33,22 @@ export class Snake {
         this._currentDirection = direction;
     }
 
-    moveForward() {
-        this.move();
+    moveForward(speed: number) {
+        this._speedInterval = setInterval(() => {
+            this.move();
+        }, speed);
     }
 
-    private move(withGrowth = false) {
+    stopMoving() {
+        if (this._speedInterval) {
+            clearInterval(this._speedInterval);
+        }
+    }
+
+    private move() {
         this._prevCords = this.toArray();
         this.makeSnake(this.getNewCords());
+        this._eventBus.emit(new SnakeMoveEvent());
     }
 
     private makeSnake(cords: Cord[]) {

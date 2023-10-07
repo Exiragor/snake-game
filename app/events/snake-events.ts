@@ -3,11 +3,11 @@ import {SnakeDirection} from "../models/snake.js";
 
 const snakeEventsDomain = 'snake';
 
-export class SnakeMoveEvent extends Event {
+export class SnakeChangeDirectionEvent extends Event {
     private readonly _snakeDirection: SnakeDirection;
 
     constructor(direction?: SnakeDirection) {
-        super('move', snakeEventsDomain);
+        super('changeDirection', snakeEventsDomain);
 
         this._snakeDirection = direction ?? 'up';
     }
@@ -17,8 +17,8 @@ export class SnakeMoveEvent extends Event {
     }
 }
 
-export class SnakeMoveForwardEvent extends Event {
+export class SnakeMoveEvent extends Event {
     constructor() {
-        super('moveForward', snakeEventsDomain);
+        super('move', snakeEventsDomain);
     }
 }

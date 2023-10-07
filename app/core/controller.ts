@@ -5,14 +5,15 @@ import {defaultClickOpts, keyDownEvent} from "../consts/controller.js";
 
 export class Controller {
     private _eventBus: EventsBus;
+    private _disabled: boolean = false;
 
-    listeners: Map<string, Map<string, (ev: DocumentEventMap[typeof keyDownEvent]) => void>> = new Map();
+    listeners: Map<string, Set<(ev: DocumentEventMap[typeof keyDownEvent]) => void>> = new Map();
 
     constructor(eventBus?: EventsBus) {
         this._eventBus = eventBus ?? new EventsBus();
     }
 
-    useClickEvent(name: string, keyCode: string, event: Event, opts: Partial<ClickOpts> = {}) {
+    useEvent(keyCode: string, event: Event, opts: Partial<ClickOpts> = {}) {
         const keyDownOpts = {...defaultClickOpts, ...opts};
 
         const listener = (ev: DocumentEventMap[typeof keyDownEvent]) => {
@@ -21,43 +22,32 @@ export class Controller {
                 ev.altKey === keyDownOpts.alt &&
                 ev.shiftKey === keyDownOpts.shift
             ) {
-                this._eventBus.emit(event);
+                if (!this._disabled) {
+                    this._eventBus.emit(event);
+                }
             }
         };
 
         document.addEventListener(keyDownEvent, listener);
 
         if (!this.listeners.has(keyCode)) {
-            this.listeners.set(keyCode, new Map());
+            this.listeners.set(keyCode, new Set());
         }
 
-        this.listeners.get(keyCode)!.set(name, listener);
-
+        this.listeners.get(keyCode)!.add(listener);
     }
 
-    removeClickEvent(name: string, keyCode: string) {
-        if (this.listeners.has(keyCode) && this.listeners.get(keyCode)?.has(name)) {
-            const listeners = this.listeners.get(keyCode)!;
-            document.removeEventListener(keyDownEvent, listeners.get(name)!);
-            listeners.delete(name);
-
-            if (listeners.size > 0) {
-                this.listeners.set(keyCode, listeners);
-            } else {
-                this.listeners.delete(keyCode);
-            }
-        }
-    }
-
-    removeByMap(name: string, map: Record<string, Event>) {
+    setEventsByMap(map: Record<string, Event>) {
         Object.keys(map).forEach(key => {
-            this.removeClickEvent(name, key);
+            this.useEvent(key, map[key]);
         });
     }
 
-    parseClickEventsMap(name: string, map: Record<string, Event>) {
-        Object.keys(map).forEach(key => {
-            this.useClickEvent(name, key, map[key]);
-        });
+    disable() {
+        this._disabled = true;
+    }
+
+    activate() {
+        this._disabled = false;
     }
 }
