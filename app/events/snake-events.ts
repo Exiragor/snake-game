@@ -22,3 +22,9 @@ export class SnakeMoveEvent extends Event {
         super('move', snakeEventsDomain);
     }
 }
+
+export class SnakeBreakEvent extends Event {
+    constructor() {
+        super('break', snakeEventsDomain);
+    }
+}

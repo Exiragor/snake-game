@@ -9,13 +9,17 @@
 }
 
 .cell.snake {
-    background-color: hotpink;
+    background-color: cornflowerblue;
 }
 
 .cell.snake.head {
-    background-color: red;
+    background-color: blueviolet;
 }
 
 .cell.snake.tail {
+    background-color: blueviolet;
+}
+
+.finished .cell.snake {
     background-color: red;
 }

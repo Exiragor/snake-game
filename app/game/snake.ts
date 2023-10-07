@@ -1,6 +1,7 @@
 import {Cord, EventsBus} from "@core";
 import {SnakeDirection} from "@models";
-import {SnakeMoveEvent} from "@events";
+import {SnakeBreakEvent, SnakeMoveEvent} from "@events";
+import {SnakeUtils} from "../utils";
 
 export class Snake {
     private _prevCords: Cord[] = [];
@@ -14,7 +15,7 @@ export class Snake {
     body!: Cord[];
 
     constructor(cords: Cord[], eventBus: EventsBus) {
-        Snake.validateCords(cords);
+        SnakeUtils.validateCords(cords);
 
         this.makeSnake(cords);
         this._eventBus = eventBus ?? new EventsBus();
@@ -47,7 +48,13 @@ export class Snake {
     private move() {
         this._prevCords = this.toArray();
         this.makeSnake(this.getNewCords());
-        this._eventBus.emit(new SnakeMoveEvent());
+
+        const isCorrectSnake = SnakeUtils.checkCollisions(this.toArray());
+        if (isCorrectSnake) {
+            this._eventBus.emit(new SnakeMoveEvent());
+        } else {
+            this._eventBus.emit(new SnakeBreakEvent());
+        }
     }
 
     private makeSnake(cords: Cord[]) {
@@ -70,22 +77,6 @@ export class Snake {
                 return [new Cord(this.head.x - 1, this.head.y), ...withoutTail];
             case "right":
                 return [new Cord(this.head.x + 1, this.head.y), ...withoutTail];
-        }
-    }
-
-    private static validateCords(cords: Cord[]) {
-        if (cords.length < 2) {
-            throw new Error('Snake should has cords for head and tail at least');
-        }
-
-        // cords should be attached
-        for (let i: number = 1; i < cords.length; i++) {
-            const xDiff = Math.abs(cords[i].x - cords[i - 1].x);
-            const yDiff = Math.abs(cords[i].y - cords[i - 1].y);
-
-            if (xDiff > 1 || yDiff > 1) {
-                throw new Error('Snake cords should be attached!');
-            }
         }
     }
 }
