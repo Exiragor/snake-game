@@ -48,11 +48,16 @@ export class Snake {
         }
     }
 
+    eat() {
+        this.makeSnake([this.head, ...this._prevCords]);
+    }
+
     private move() {
         this._prevCords = this.toArray();
         this.makeSnake(this.getNewCords());
 
         const isCorrectSnake = SnakeUtils.checkCollisions(this.toArray());
+
         if (isCorrectSnake) {
             this._eventBus.emit(new SnakeMoveEvent());
         } else {

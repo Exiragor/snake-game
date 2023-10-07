@@ -11,7 +11,7 @@ const config: IConfiguration =  {
         appleTime: 4500,
     },
     snake: {
-        speed: 250,
+        speed: 150,
         cords: [
             new Cord(10, 8),
             new Cord(10, 9),

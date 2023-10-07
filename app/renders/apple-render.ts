@@ -17,6 +17,10 @@ export class AppleRender extends Render {
         this._cells = this.getElements<HTMLDivElement>(cellsSelector);
     }
 
+    get position() {
+        return this._lastPosition;
+    }
+
 
     startSpawnApples() {
         this.spawnApples().catch(console.error);

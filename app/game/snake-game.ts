@@ -70,6 +70,11 @@ export class SnakeGame extends Game {
         });
 
         this._eventBus.on(new SnakeMoveEvent(), () => {
+            if (this._appleRender.position === FieldCord.fromCord(this._snake.head).getPosition()) {
+                this._appleRender.clearApple().catch(console.error);
+                this._snake.eat();
+            }
+
             this._snakeRender.renderSnake(this._snake).catch(console.error);
             this._appleRender.setBlockedPositions(
                 this._snake
