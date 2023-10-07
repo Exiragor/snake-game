@@ -8,6 +8,10 @@
     box-sizing: border-box;
 }
 
+.cell.apple {
+    background-color: yellow;
+}
+
 .cell.snake {
     background-color: cornflowerblue;
 }

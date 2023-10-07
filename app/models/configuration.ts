@@ -5,7 +5,8 @@ export interface IFieldConf {
         xCols: number;
         yCols: number;
         cellSize: number;
-    }
+    },
+    appleTime: number;
 }
 
 export interface ISnakeConf {

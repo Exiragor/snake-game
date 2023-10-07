@@ -7,7 +7,8 @@ const config: IConfiguration =  {
             xCols: 20,
             yCols: 20,
             cellSize: 25,
-        }
+        },
+        appleTime: 4500,
     },
     snake: {
         speed: 250,

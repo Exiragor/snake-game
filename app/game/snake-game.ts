@@ -1,9 +1,11 @@
 import config from '../configuration';
 import {Game, Controller, EventsBus} from "@core";
 import {SnakeChangeDirectionEvent, SnakeMoveEvent, GameToggleEvent, GameRestoreEvent, SnakeBreakEvent} from "@events";
-import {FieldRender, SnakeRender} from "../renders";
+import {AppleRender, FieldRender, SnakeRender} from "../renders";
 import {snakeMovementMap} from "./snake-movement-map.ts";
 import {Snake} from "./snake.ts";
+import {FieldCord} from "./field-cord.ts";
+import {getMaxPositionByFieldConf} from "../utils";
 
 export class SnakeGame extends Game {
     private _eventBus: EventsBus = new EventsBus();
@@ -11,17 +13,31 @@ export class SnakeGame extends Game {
     private _snakeController: Controller = new Controller(this._eventBus);
     private _gameController: Controller = new Controller(this._eventBus);
 
-    async init() {
-        const fieldRender = new FieldRender(config.field);
-        await fieldRender.renderField();
+    private _fieldRender: FieldRender = new FieldRender(config.field);
+    private _snakeRender!: SnakeRender;
+    private _appleRender!: AppleRender;
 
-        const snakeRender = new SnakeRender();
-        await snakeRender.renderSnake(this._snake);
+    // main init method
+    async init() {
+        await this._fieldRender.renderField();
+
+        this._snakeRender = new SnakeRender();
+        await this._snakeRender.renderSnake(this._snake);
+
+        this._appleRender = new AppleRender(
+            getMaxPositionByFieldConf(config.field),
+            config.field.appleTime)
+
+        this._appleRender.setBlockedPositions(
+            this._snake
+                .toArray()
+                .map(c => FieldCord.fromCord(c).getPosition())
+        );
 
         this.setControllers();
 
-        this.watchSnakeMovement(snakeRender, fieldRender);
-        this.watchGameEvents(snakeRender, fieldRender);
+        this.watchSnakeMovement();
+        this.watchGameEvents();
     }
 
     override start() {
@@ -29,6 +45,8 @@ export class SnakeGame extends Game {
 
         this._snakeController.activate();
         this._snake.moveForward(config.snake.speed);
+        this._fieldRender.hideState().catch(console.error);
+        this._appleRender.startSpawnApples();
     }
 
     override stop() {
@@ -36,6 +54,8 @@ export class SnakeGame extends Game {
 
         this._snakeController.disable();
         this._snake.stopMoving();
+        this._appleRender.stopSpawnApples();
+        this._fieldRender.pauseGame().catch(console.error);
     }
 
     private setControllers() {
@@ -44,40 +64,43 @@ export class SnakeGame extends Game {
         this._gameController.useEvent('Escape', new GameRestoreEvent());
     }
 
-    private watchSnakeMovement(snakeRender: SnakeRender, fieldRender: FieldRender) {
+    private watchSnakeMovement() {
         this._eventBus.on(new SnakeChangeDirectionEvent(), (direction) => {
             this._snake.changeDirection(direction);
         });
 
         this._eventBus.on(new SnakeMoveEvent(), () => {
-            snakeRender.renderSnake(this._snake).catch(console.error);
+            this._snakeRender.renderSnake(this._snake).catch(console.error);
+            this._appleRender.setBlockedPositions(
+                this._snake
+                    .toArray()
+                    .map(c => FieldCord.fromCord(c).getPosition())
+            );
         });
 
         this._eventBus.on(new SnakeBreakEvent(), () => {
             this.finish();
-            fieldRender.finishGameRender().catch(console.error);
+            this._fieldRender.finishGameRender().catch(console.error);
         });
     }
 
-    private watchGameEvents(snakeRender: SnakeRender, fieldRender: FieldRender) {
+    private watchGameEvents() {
         this._eventBus.on(new GameToggleEvent(), () => {
             if (!this.isActive && !this.finished) {
                 this.start();
-                fieldRender.hideState().catch(console.error);
             } else if (this.isActive) {
                 this.stop();
-                fieldRender.pauseGame().catch(console.error);
             }
         });
 
         this._eventBus.on(new GameRestoreEvent(), () => {
             this.restore();
-            snakeRender.destroySnake(this._snake)
+            this._snakeRender.destroySnake(this._snake)
                 .then(() => {
                     this._snake = new Snake(config.snake.cords, this._eventBus);
-                    return snakeRender.renderSnake(this._snake);
+                    return this._snakeRender.renderSnake(this._snake);
                 })
-                .then(() => fieldRender.refreshGame())
+                .then(() => this._fieldRender.refreshGame())
                 .catch(console.error);
         });
     }
