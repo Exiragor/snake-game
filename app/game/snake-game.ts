@@ -1,7 +1,14 @@
 import config from '../configuration';
 import {Game, Controller, EventsBus} from "@core";
-import {SnakeChangeDirectionEvent, SnakeMoveEvent, GameToggleEvent, GameRestoreEvent, SnakeBreakEvent} from "@events";
-import {AppleRender, FieldRender, SnakeRender} from "../renders";
+import {
+    SnakeChangeDirectionEvent,
+    SnakeMoveEvent,
+    GameToggleEvent,
+    GameRestoreEvent,
+    SnakeBreakEvent,
+    SnakeEatEvent
+} from "@events";
+import {AppleRender, FieldRender, SnakeRender, StateRender} from "../renders";
 import {snakeMovementMap} from "./snake-movement-map.ts";
 import {Snake} from "./snake.ts";
 import {FieldCord} from "./field-cord.ts";
@@ -14,6 +21,7 @@ export class SnakeGame extends Game {
     private _gameController: Controller = new Controller(this._eventBus);
 
     private _fieldRender: FieldRender = new FieldRender(config.field);
+    private _stateRender: StateRender = new StateRender();
     private _snakeRender!: SnakeRender;
     private _appleRender!: AppleRender;
 
@@ -46,7 +54,7 @@ export class SnakeGame extends Game {
         this._snakeController.activate();
         this._snake.moveForward(config.snake.speed);
         this._fieldRender.hideState().catch(console.error);
-        this._appleRender.startSpawnApples();
+        this._appleRender.startSpawnApples(true);
     }
 
     override stop() {
@@ -55,7 +63,12 @@ export class SnakeGame extends Game {
         this._snakeController.disable();
         this._snake.stopMoving();
         this._appleRender.stopSpawnApples();
-        this._fieldRender.pauseGame().catch(console.error);
+    }
+
+    override increaseScore(deltaScore: number) {
+        super.increaseScore(deltaScore);
+
+        this._stateRender.changeScore(this.score);
     }
 
     private setControllers() {
@@ -70,22 +83,33 @@ export class SnakeGame extends Game {
         });
 
         this._eventBus.on(new SnakeMoveEvent(), () => {
-            if (this._appleRender.position === FieldCord.fromCord(this._snake.head).getPosition()) {
-                this._appleRender.clearApple().catch(console.error);
-                this._snake.eat();
-            }
-
-            this._snakeRender.renderSnake(this._snake).catch(console.error);
+            this.increaseScore(2);
             this._appleRender.setBlockedPositions(
                 this._snake
                     .toArray()
                     .map(c => FieldCord.fromCord(c).getPosition())
             );
+
+            if (this._appleRender.checkOnAppleCell(FieldCord.fromCord(this._snake.head))) {
+                this._snake.eat();
+            }
+
+            this._snakeRender.renderSnake(this._snake).catch(console.error);
         });
 
         this._eventBus.on(new SnakeBreakEvent(), () => {
             this.finish();
             this._fieldRender.finishGameRender().catch(console.error);
+        });
+
+        this._eventBus.on(new SnakeEatEvent(), () => {
+            this._appleRender.setBlockedPositions(
+                this._snake
+                    .toArray()
+                    .map(c => FieldCord.fromCord(c).getPosition())
+            );
+            this._appleRender.eatApple();
+            this.increaseScore(15);
         });
     }
 
@@ -95,6 +119,7 @@ export class SnakeGame extends Game {
                 this.start();
             } else if (this.isActive) {
                 this.stop();
+                this._fieldRender.pauseGame().catch(console.error);
             }
         });
 

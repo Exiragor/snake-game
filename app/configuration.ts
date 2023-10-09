@@ -4,8 +4,8 @@ import {Cord} from "@core";
 const config: IConfiguration =  {
     field: {
         size: {
-            xCols: 20,
-            yCols: 20,
+            xCols: 16,
+            yCols: 16,
             cellSize: 25,
         },
         appleTime: 4500,
@@ -13,11 +13,11 @@ const config: IConfiguration =  {
     snake: {
         speed: 150,
         cords: [
-            new Cord(10, 8),
-            new Cord(10, 9),
-            new Cord(10, 10),
-            new Cord(10, 11),
-            new Cord(10, 12),
+            new Cord(8, 6),
+            new Cord(8, 7),
+            new Cord(8, 8),
+            new Cord(8, 9),
+            new Cord(8, 10),
         ]
     }
 }

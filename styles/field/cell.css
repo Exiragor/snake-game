@@ -3,8 +3,6 @@
     width: var(--cell-size);
     height: var(--cell-size);
     background-color: transparent;
-    border-right: var(--main-border-dash);
-    border-bottom: var(--main-border-dash);
     box-sizing: border-box;
 }
 

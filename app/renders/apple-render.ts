@@ -1,6 +1,7 @@
 import {Render} from "@core";
 import {cellsSelector} from "@consts";
 import {getRandomInt} from "../utils";
+import {FieldCord} from "../game";
 
 export class AppleRender extends Render {
     private _appleInterval: number | null = null;
@@ -17,17 +18,16 @@ export class AppleRender extends Render {
         this._cells = this.getElements<HTMLDivElement>(cellsSelector);
     }
 
-    get position() {
-        return this._lastPosition;
+    checkOnAppleCell(fieldCord: FieldCord): boolean {
+        return fieldCord.getPosition() === this._lastPosition;
     }
 
-
-    startSpawnApples() {
-        this.spawnApples().catch(console.error);
+    startSpawnApples(useLastPosition: boolean = false) {
+        this.spawnApple(useLastPosition ? this._lastPosition : 0).catch(console.error);
 
         this._appleInterval = setInterval(() => {
             this.clearApple().catch(console.error);
-            this.spawnApples().catch(console.error);
+            this.spawnApple().catch(console.error);
         }, this.appleTime);
     }
 
@@ -40,17 +40,22 @@ export class AppleRender extends Render {
         this.clearApple().catch(console.error);
     }
 
+    eatApple() {
+        this.stopSpawnApples();
+        this.startSpawnApples();
+    }
+
     async clearApple() {
         await this.render(() => {
             this._cells[this._lastPosition]?.classList.remove('apple');
         });
     }
 
-    async spawnApples() {
+    async spawnApple(position: number = 0) {
         let randomPosition: number;
 
         do {
-            randomPosition = getRandomInt(this.maxPosition);
+            randomPosition = position || getRandomInt(this.maxPosition);
         } while (this._blockedPositions.includes(randomPosition));
 
         await this.render(() => {

@@ -28,3 +28,10 @@ export class SnakeBreakEvent extends Event {
         super('break', snakeEventsDomain);
     }
 }
+
+export class SnakeEatEvent extends Event {
+    constructor() {
+        super('eat', snakeEventsDomain);
+    }
+}
+
