@@ -1,6 +1,6 @@
 import {Cord, EventsBus} from "@core";
 import {SnakeDirection} from "@models";
-import {SnakeBreakEvent, SnakeMoveEvent} from "@events";
+import {SnakeBreakEvent, SnakeEatEvent, SnakeMoveEvent} from "@events";
 import {SnakeUtils} from "../utils";
 
 export class Snake {
@@ -50,6 +50,7 @@ export class Snake {
 
     eat() {
         this.makeSnake([this.head, ...this._prevCords]);
+        this._eventBus.emit(new SnakeEatEvent());
     }
 
     private move() {

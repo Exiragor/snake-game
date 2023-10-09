@@ -52,6 +52,7 @@ export class AppleRender extends Render {
     }
 
     async spawnApple(position: number = 0) {
+        console.log(position);
         let randomPosition: number;
 
         do {
