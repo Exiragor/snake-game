@@ -9,6 +9,7 @@ export class Snake {
     private _length: number = 0;
     private _speedInterval: number | null = null;
     private _eventBus: EventsBus;
+    private _isChangeDirection: boolean = false;
 
     head!: Cord;
     tail!: Cord;
@@ -30,15 +31,21 @@ export class Snake {
     }
 
     changeDirection(direction: SnakeDirection) {
-        if (SnakeUtils.checkOppositeDirection(this._currentDirection, direction)) {
+        if (
+            this._isChangeDirection ||
+            SnakeUtils.checkOppositeDirection(this._currentDirection, direction)
+        ) {
             return;
         }
+
+        this._isChangeDirection = true;
         this._currentDirection = direction;
     }
 
     moveForward(speed: number) {
         this._speedInterval = setInterval(() => {
             this.move();
+            this._isChangeDirection = false;
         }, speed);
     }
 
