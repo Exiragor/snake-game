@@ -34,7 +34,8 @@ export class SnakeGame extends Game {
 
         this._appleRender = new AppleRender(
             getMaxPositionByFieldConf(config.field),
-            config.field.appleTime)
+            config.field.appleTime
+        );
 
         this._appleRender.setBlockedPositions(
             this._snake
@@ -131,6 +132,7 @@ export class SnakeGame extends Game {
                     return this._snakeRender.renderSnake(this._snake);
                 })
                 .then(() => this._fieldRender.refreshGame())
+                .then(() => this._stateRender.changeScore(0))
                 .catch(console.error);
         });
     }
