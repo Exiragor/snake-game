@@ -12,6 +12,7 @@ body {
 .wrapper {
     height: 100vh;
     display: flex;
+    background-color: mintcream;
     flex-direction: column;
     justify-content: center;
     align-items: center;

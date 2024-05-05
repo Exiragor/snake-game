@@ -3,25 +3,26 @@
     width: var(--cell-size);
     height: var(--cell-size);
     background-color: transparent;
+    background-size: contain;
     box-sizing: border-box;
 }
 
 .cell.apple {
-    background-color: yellow;
+    background-image: url("../../assets/Graphics/apple.png");
 }
 
 .cell.snake {
-    background-color: cornflowerblue;
+    /*background-color: cornflowerblue;*/
 }
 
 .cell.snake.head {
-    background-color: blueviolet;
+    background-image: url("../../assets/Graphics/head_up.png");
 }
 
 .cell.snake.tail {
-    background-color: blueviolet;
+    background-image: url("../../assets/Graphics/tail_down.png");
 }
 
-.finished .cell.snake {
-    background-color: red;
-}
+/*.finished .cell.snake {*/
+/*    background-color: red;*/
+/*}*/

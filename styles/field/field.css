@@ -5,6 +5,13 @@
     position: relative;
 }
 
+.field tr:nth-child(odd) td:nth-child(odd) {
+    background: orange;
+}
+.chess tr:nth-child(even) td:nth-child(even) {
+    background: orange;
+}
+
 .field-state {
     position: absolute;
     top: 0;

@@ -6,7 +6,7 @@ const config: IConfiguration =  {
         size: {
             xCols: 16,
             yCols: 16,
-            cellSize: 25,
+            cellSize: 30,
         },
         appleTime: 4500,
     },
